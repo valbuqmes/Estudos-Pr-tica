@@ -1,0 +1,128 @@
+<html>
+    <body>
+        
+        <div style="text-align: center; padding-top: 50px;">
+            <canvas id="folha" width="600" height="500">
+            <script>
+                //carrega os primeiros comandos
+                window.onload = function () {
+                    iniciar();//inicia os comandos e variveis
+                    setInterval(principal, 1000 / 30); //roda o jogo dentro do laço
+                }
+
+                function iniciar(){
+                    folhaDesenho = document.getElementById("folha");
+                    areaDesenho = folhaDesenho.getContext("2d");
+                    border = document.getElementById("folha").style.border = "thick solid #fefd00";
+                    larguraCampo = 600;
+                    alturaCampo = 500;
+                    espessuraRede = 5;
+                    alturaRaquete = 100;
+                    espessuraRaquete = 10;
+                    efeitoRaquete = 0.3;
+                    velocidadeJogador2 = 5;
+                    diametroBola = 10;
+                    posicaoJogador1 = (posicaoJogador2 = 10);
+                    pontuacaoJogador1 = (pontuacaoJogador2 = 0);
+                    posicaoBolaX = (posicaoBolaY = 10);
+                    velocidadeBolaPosicaoX = velocidadeBolaPosicaoY  = 5;
+
+                    folhaDesenho.addEventListener('mousemove', function(e){
+                        posicaoJogador1 = e.clientY - alturaRaquete / 2;
+                    });
+            };
+
+                function principal(){
+                    desenhar();
+                    calcular();
+                };
+
+                function desenhar(){
+                    areaDesenho.fillStyle = "#000000";//preto
+                    areaDesenho.fillRect(0, 0, larguraCampo, alturaCampo); 
+                    areaDesenho.fillStyle = '#fefd00';//amarelo
+                    areaDesenho.fillRect(larguraCampo / 2 - espessuraRede / 2, 0, espessuraRede, alturaCampo);
+                    //raquetes
+                    areaDesenho.fillRect(0, posicaoJogador1, espessuraRaquete, alturaRaquete);
+                    areaDesenho.fillRect(larguraCampo - espessuraRaquete, posicaoJogador2, espessuraRaquete, alturaRaquete);
+                    // Escrever a pontuação dos jogadores
+                    areaDesenho.fillText("Humano - " + pontuacaoJogador1 + " pontos", 100, 100);
+                    areaDesenho.fillText("Computador - " + pontuacaoJogador2 + " pontos", larguraCampo - 200, 100);
+                    //desenho BOLA
+                    areaDesenho.fillRect(posicaoBolaX - diametroBola / 2, posicaoBolaY - diametroBola / 2, diametroBola, diametroBola);
+                };
+
+                function calcular(){
+                    
+                    
+                    posicaoBolaX = posicaoBolaX + velocidadeBolaPosicaoX;
+                    posicaoBolaY = posicaoBolaY + velocidadeBolaPosicaoY;
+
+                    //verifica a lateral superior
+                    if(posicaoBolaY < 0 && velocidadeBolaPosicaoY < 0){
+                        velocidadeBolaPosicaoY = -velocidadeBolaPosicaoY;
+                    };
+
+                    //verifa a lateral inferior
+                    if(posicaoBolaY > alturaCampo && velocidadeBolaPosicaoY > 0){
+                        velocidadeBolaPosicaoY = -velocidadeBolaPosicaoY;         
+                    }
+
+                    //verifica se o jogador 2 fez ponto
+                    if(posicaoBolaX < 0){
+                        if(posicaoBolaY > posicaoJogador1 && posicaoBolaY < posicaoJogador1 + alturaRaquete){
+                            //rebater a bola
+                            velocidadeBolaPosicaoX = -velocidadeBolaPosicaoX;
+
+                            diferençaY = posicaoBolaY - (posicaoJogador1 + alturaRaquete / 2);
+                            velocidadeBolaPosicaoY = diferençaY * efeitoRaquete;
+                        }else{
+                            //pontos jogador 2
+                            pontuacaoJogador2++;
+
+                            continuar();
+        
+                          
+                        }
+                    }
+
+                    //verifica se o player1 fez ponto
+                    if(posicaoBolaX > larguraCampo){
+                        if(posicaoBolaY > posicaoJogador2 && posicaoBolaY < posicaoJogador2 + alturaRaquete){
+                            //rebater a bola
+                            velocidadeBolaPosicaoX = -velocidadeBolaPosicaoX;
+
+                            diferençaY = posicaoBolaY - (posicaoJogador2 + alturaRaquete / 2)
+                            velocidadeBolaPosicaoY = diferençaY * efeitoRaquete
+                        }else{
+                            //pontos do player 1
+                            pontuacaoJogador1++;
+                            //colocar no centro
+
+                            continuar();
+                        }
+                        
+                    };
+                        //atualiza a posição do jogador 2
+                        if(posicaoJogador2 + alturaRaquete / 2 < posicaoBolaY){
+                            posicaoJogador2 = posicaoJogador2 + velocidadeJogador2;
+                        }else {
+                            posicaoJogador2 = posicaoJogador2 - velocidadeJogador2;
+                        }
+
+
+                
+                
+                }
+
+                function continuar(){
+                    posicaoBolaX = larguraCampo / 2;
+                    posicaoBolaY = alturaCampo / 2;
+                    velocidadeBolaPosicaoX = -velocidadeBolaPosicaoX;
+                    velocidadeBolaPosicaoY = 3;
+                }
+
+            </script>
+        </div>
+    </body>
+</html>
